@@ -1,0 +1,45 @@
+#Creating the Directory for LVM Mount point
+
+- hosts: all
+  sudo: True
+  tasks:
+   - name: creating Directory for LVM Mount Point
+     action: file path=/opt/app state=directory
+
+#script for fdisk
+- name : creating partition
+  hosts: all
+  sudo: yes
+  tasks:
+  - name: Transfer the script
+    copy: src=/home/ubuntu/ansible/playbooks/fdisk.sh dest=/home/ubuntu mode=0777
+  - name: script to run
+    command: sudo sh /home/ubuntu/fdisk.sh
+
+#installing lvm package
+  - name: Install the package "lvm2"
+    apt:
+      name: lvm2
+      state: present
+
+#script for creating LVM
+  - name: Transfer the script
+    copy: src=/home/ubuntu/ansible/playbooks/lvm_create.sh dest=/home/ubuntu mode=0777
+  - name: script to run
+    command: sudo sh /home/ubuntu/lvm_create.sh
+
+#making filesystem
+  - filesystem:
+      fstype: ext4
+      dev: /dev/vg1/lv1
+
+#fstab entry and create mount point
+- name: fstab entry and create mount point
+  hosts: all
+  sudo: yes
+  tasks:
+  - name: Transfer the script
+    copy: src=/home/ubuntu/ansible/playbooks/mountpnt.sh dest=/home/ubuntu mode=0777
+  - name: script to run
+    command: sudo sh /home/ubuntu/mountpnt.sh
+

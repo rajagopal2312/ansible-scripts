@@ -1,0 +1,7 @@
+#making filesyste
+- hosts: all
+  sudo: True
+  tasks:
+  - filesystem:
+      fstype: ext4
+      dev: /dev/vg1/lv1

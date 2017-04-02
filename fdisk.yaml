@@ -1,0 +1,9 @@
+#script for fdisk
+- name : creating partition
+  hosts: all
+  sudo: yes
+  tasks:
+  - name: Transfer the script
+    copy: src=/home/ubuntu/ansible/playbooks/fdisk.sh dest=/home/ubuntu mode=0777		
+  - name: script to run
+    command: sudo sh /home/ubuntu/fdisk.sh
