@@ -1,0 +1,46 @@
+- hosts: droplets
+  tasks:
+    - name: Installs nginx web server
+      apt: pkg=nginx state=installed update_cache=true
+      notify:
+        - start nginx
+
+  handlers:
+    - name: start nginx
+      service: name=nginx state=started
+
+------------------------------------------------------
+
+- hosts: web
+  name: installs and starts apache
+  tasks:
+    - name: install apache packages
+      yum:
+        name: httpd
+        state: latest
+
+    - name: starts apache service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+--------------------------------------------------------
+
+ubuntu@ip-172-31-30-122:~/ansible$ cat tasks/tomcat.yaml
+#installting packages
+- name: removing the package "tomcat"
+  apt:
+    name: tomcat7
+    state: absent
+    purge: yes
+    force: yes
+ubuntu@ip-172-31-30-122:~/ansible$ cat main.yaml
+#calling the task from tasks file
+
+- hosts: all
+  remote_user: ubuntu
+  sudo: true
+  tasks:
+    - include: tasks/tomcat.yaml
+
